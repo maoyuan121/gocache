@@ -4,16 +4,16 @@ import (
 	"time"
 )
 
-// Options represents the cache store available options
+// Options 是所有 store 的选项
 type Options struct {
-	// Cost corresponds to the memory capacity used by the item when setting a value
-	// Actually it seems to be used by Ristretto library only
+	// Cost 指的是设置值时该项所使用的内存容量
+	// 实际上，它似乎只有 Ristretto 库使用
 	Cost int64
 
-	// Expiration allows to specify an expiration time when setting a value
+	// Expiration 允许在设置值时指定过期时间
 	Expiration time.Duration
 
-	// Tags allows to specify associated tags to the current value
+	// Tags 允许指定与当前值相关联的标签
 	Tags []string
 }
 

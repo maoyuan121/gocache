@@ -8,7 +8,7 @@ import (
 	"github.com/eko/gocache/v2/store"
 )
 
-// Stats allows to returns some statistics of codec usage
+// Stats 允许返回一些 codec 使用的统计数据
 type Stats struct {
 	Hits              int
 	Miss              int
@@ -22,14 +22,14 @@ type Stats struct {
 	ClearError        int
 }
 
-// Codec represents an instance of a cache store
+// Codec 表示一个  cache store 的实例
 type Codec struct {
 	store    store.StoreInterface
 	stats    *Stats
 	statsMtx sync.Mutex
 }
 
-// New return a new codec instance
+// New 返回一个新的  codec 实例
 func New(store store.StoreInterface) *Codec {
 	return &Codec{
 		store: store,

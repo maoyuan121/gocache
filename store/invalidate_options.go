@@ -1,8 +1,8 @@
 package store
 
-// InvalidateOptions represents the cache invalidation available options
+// InvalidateOptions 表示缓存失效可用选项
 type InvalidateOptions struct {
-	// Tags allows to specify associated tags to the current value
+	// Tags 允许指定与当前值相关联的标签
 	Tags []string
 }
 

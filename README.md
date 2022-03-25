@@ -6,20 +6,20 @@
 Gocache
 =======
 
-Guess what is Gocache? a Go cache library.
-This is an extendable cache library that brings you a lot of features for caching data.
+Gocache 是一个 Go 缓存库
+这是一个可扩展的缓存库，为缓存数据带来了许多特性。
 
-## Overview
+## 概要
 
-Here is what it brings in detail:
+以下是它带来的细节:
 
-* ✅ Multiple cache stores: actually in memory, redis, or your own custom store
-* ✅ A chain cache: use multiple cache with a priority order (memory then fallback to a redis shared cache for instance)
-* ✅ A loadable cache: allow you to call a callback function to put your data back in cache
-* ✅ A metric cache to let you store metrics about your caches usage (hits, miss, set success, set error, ...)
-* ✅ A marshaler to automatically marshal/unmarshal your cache values as a struct
-* ✅ Define default values in stores and override them when setting data
-* ✅ Cache invalidation by expiration time and/or using tags
+* ✅ 多缓存存储:实际上在内存，redis，或你自己的自定义存储
+* ✅ 链式缓存:使用多个缓存，有优先级顺序(例如内存，然后回退到 redis 共享缓存)
+* ✅ 一个可加载的缓存:允许你调用一个回调函数把你的数据放回缓存
+* ✅ 一个度量缓存，让你存储关于你的缓存使用的度量(命中，错过，设置成功，设置错误，…)
+* ✅ 将缓存值作为结构自动 marshal/unmarshal 的marshaler
+* ✅ 在存储中定义默认值，并在设置数据时覆盖它们
+* ✅ 缓存过期时间和/或使用标记无效
 
 ## Built-in stores
 
@@ -40,7 +40,7 @@ Here is what it brings in detail:
 
 ### A simple cache
 
-Here is a simple cache instantiation with Redis but you can also look at other available stores:
+下面是一个简单的 Redis 缓存实例化，但你也可以看看其他可用的存储:
 
 #### Memcache
 
@@ -54,7 +54,7 @@ memcacheStore := store.NewMemcache(
 
 cacheManager := cache.New(memcacheStore)
 err := cacheManager.Set(ctx, "my-key", []byte("my-value"), &store.Options{
-	Expiration: 15*time.Second, // Override default value of 10 seconds defined in the store
+	Expiration: 15*time.Second, //  覆盖在  store 中定义的默认值 10 秒
 })
 if err != nil {
     panic(err)
@@ -64,7 +64,7 @@ value := cacheManager.Get(ctx, "my-key")
 
 cacheManager.Delete(ctx, "my-key")
 
-cacheManager.Clear(ctx) // Clears the entire cache, in case you want to flush all cache
+cacheManager.Clear(ctx) // 清除整个缓存，以防您想要清除所有缓存
 ```
 
 #### Memory (using Bigcache)
@@ -188,9 +188,9 @@ if err != nil {
 value, _ := cacheManager.Get(ctx, "my-key")
 ```
 
-### A chained cache
+### 链式缓存
 
-Here, we will chain caches in the following order: first in memory with Ristretto store, then in Redis (as a fallback):
+在这里，我们将按照以下顺序链接缓存:首先在内存中使用 Ristretto 存储，然后在 Redis (作为一个后备):
 
 ```go
 // Initialize Ristretto cache and Redis client
@@ -214,11 +214,11 @@ cacheManager := cache.NewChain(
 // ... Then, do what you want with your cache
 ```
 
-`Chain` cache also put data back in previous caches when it's found so in this case, if ristretto doesn't have the data in its cache but redis have, data will also get setted back into ristretto (memory) cache.
+`Chain` 缓存也会把数据放回之前的缓存中，所以在这种情况下，如果 ristretto 的缓存中没有数据，但是 redis 有，数据也会被放回 ristretto(内存) 缓存中。
 
 ### A loadable cache
 
-This cache will provide a load function that acts as a callable function and will set your data back in your cache in case they are not available:
+这个缓存将提供一个加载函数，作为一个可调用函数，并将你的数据设置回缓存，以防它们不可用:
 
 ```go
 // Initialize Redis client and store
@@ -240,11 +240,11 @@ cacheManager := cache.NewLoadable(
 // ... Then, you can get your data and your function will automatically put them in cache(s)
 ```
 
-Of course, you can also pass a `Chain` cache into the `Loadable` one so if your data is not available in all caches, it will bring it back in all caches.
+当然，你也可以传递一个 `Chain` 缓存到 `Loadable` 缓存中，所以如果你的数据在所有缓存中不可用，它会把它带回所有缓存中。
 
 ### A metric cache to retrieve cache statistics
 
-This cache will record metrics depending on the metric provider you pass to it. Here we give a Prometheus provider:
+这个缓存将根据您传递给它的度量提供程序记录度量。在这里，我们使用普罗米修斯的供应商:
 
 ```go
 // Initialize Redis client and store
@@ -265,7 +265,8 @@ cacheManager := cache.NewMetric(
 
 ### A marshaler wrapper
 
-Some caches like Redis stores and returns the value as a string so you have to marshal/unmarshal your structs if you want to cache an object. That's why we bring a marshaler service that wraps your cache and make the work for you:
+一些缓存，如 Redis 存储和返回值作为一个字符串，所以你必须 marshal/unmarshal 你的结构，如果你想缓存一个对象。
+这就是为什么我们带来了一个封送服务，包装你的缓存，让你的工作:
 
 ```go
 // Initialize Redis client and store
@@ -299,16 +300,15 @@ if err != nil {
 marshal.Delete(ctx, "my-key")
 ```
 
-The only thing you have to do is to specify the struct in which you want your value to be un-marshalled as a second argument when calling the `.Get()` method.
-
+你需要做的唯一一件事就是在调用' `.Get()` 方法时指定你想要你的值被反编组的结构作为第二个参数。
 
 ### Cache invalidation using tags
 
-You can attach some tags to items you create so you can easily invalidate some of them later.
+您可以将一些标记附加到您创建的 item 上，以便稍后可以轻松地使其中一些标记失效。
 
-Tags are stored using the same storage you choose for your cache.
+标签使用您为缓存选择的相同存储存储。
 
-Here is an example on how to use it:
+下面是使用的例子：
 
 ```go
 // Initialize Redis client and store
@@ -327,13 +327,13 @@ marshal := marshaler.New(cacheManager)
 key := BookQuery{Slug: "my-test-amazing-book"}
 value := Book{ID: 1, Name: "My test amazing book", Slug: "my-test-amazing-book"}
 
-// Set an item in the cache and attach it a "book" tag
+// 在缓存中设置了一个 item，并附上了一个 "book" 标签
 err = marshal.Set(ctx, key, value, store.Options{Tags: []string{"book"}})
 if err != nil {
     panic(err)
 }
 
-// Remove all items that have the "book" tag
+// 清除所有附上了 "book" 标签的 item
 err := marshal.Invalidate(ctx, store.InvalidateOptions{Tags: []string{"book"}})
 if err != nil {
     panic(err)
@@ -346,7 +346,7 @@ if err != nil {
 }
 ```
 
-Mix this with expiration times on your caches to have a fine tuned control on how your data are cached.
+将其与缓存上的过期时间混合在一起，可以更好地控制数据的缓存方式。
 
 ### Write your own custom cache
 
